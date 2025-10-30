@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
+import { fileURLToPath } from 'url'
 
 dotenv.config({ path: path.resolve('./server/.env') })
 
@@ -14,6 +15,7 @@ app.use(express.json())
 
 console.log('Backend running – free-plan safe fixtures ready')
 
+// MOCKUP kampe
 const generateMockFixtures = () => {
   const todayStr = new Date().toISOString().slice(0, 10)
   const fixtures = []
@@ -24,7 +26,7 @@ const generateMockFixtures = () => {
       visitorteam_id: i + 10,
       localteam: { name: `Mockupkamp ${i}A` },
       visitorteam: { name: `Mockupkamp ${i}B` },
-      league_id: 271, 
+      league_id: 271,
       time: { starting_at: `${todayStr}T15:00:00Z` }
     })
   }
@@ -36,7 +38,6 @@ app.get('/api/fixtures', async (req, res) => {
   let fixtures = []
 
   try {
-    // superliga
     const response = await fetch(
       `https://soccer.sportmonks.com/api/v3/football/fixtures?leagues=271&date=${todayStr}&api_token=${process.env.SPORTSMONKS_TOKEN}`
     )
@@ -58,4 +59,29 @@ app.get('/api/fixtures', async (req, res) => {
   res.json({ data: fixtures })
 })
 
-app.listen(PORT, () => console.log(`Backend server running on http://localhost:${PORT}`))
+app.get('/api/rounds/:roundId', async (req, res) => {
+  const { roundId } = req.params
+  try {
+    const response = await fetch(
+      `https://api.sportmonks.com/v3/football/rounds/${roundId}?include=fixtures.odds.market;fixtures.odds.bookmaker;fixtures.participants;league.country&filters=markets:1;bookmakers:2&api_token=${process.env.SPORTSMONKS_TOKEN}`
+    )
+    const json = await response.json()
+    res.json(json)
+  } catch (err) {
+    console.error('Error fetching round data:', err.message)
+    res.status(500).json({ error: 'Failed to fetch data' })
+  }
+})
+
+// SERVE FRONTEND (for Render)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const distPath = path.join(__dirname, '../dist')
+app.use(express.static(distPath))
+
+// SPA fallback (Vue Router history mode)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'))
+})
+
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
