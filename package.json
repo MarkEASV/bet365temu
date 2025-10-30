@@ -14,18 +14,21 @@
     "start": "node server/index.js"
   },
   "dependencies": {
-    "@dataconnect/generated": "file:src/dataconnect-generated",
-    "@tailwindcss/vite": "^4.1.13",
-    "axios": "^1.12.2",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "firebase": "^12.3.0",
-    "node-fetch": "^3.3.2",
-    "tailwindcss": "^4.1.13",
-    "vue": "^3.5.18",
-    "vue-router": "^4.5.1"
-  },
+  "@dataconnect/generated": "file:src/dataconnect-generated",
+  "@tailwindcss/vite": "^4.1.13",
+  "axios": "^1.12.2",
+  "cors": "^2.8.5",
+  "dotenv": "^17.2.3",
+  "express": "^5.1.0",
+  "firebase": "^12.3.0",
+  "node-fetch": "^3.3.2",
+  "tailwindcss": "^4.1.13",
+  "vue": "^3.5.18",
+  "vue-router": "^4.5.1",
+  "vite": "^5.0.0",
+  "@vitejs/plugin-vue": "^4.0.0",
+  "vite-plugin-vue-devtools": "^2.0.0"
+},
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@vitejs/plugin-vue": "^6.0.1",
