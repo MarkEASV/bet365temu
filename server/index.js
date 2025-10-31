@@ -88,14 +88,48 @@ app.get('/api/rounds/:roundId', async (req, res) => {
   }
 })
 
-// SERVE FRONTEND (for deployments)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distPath = path.join(__dirname, '../dist')
-app.use(express.static(distPath))
 
-// SPA fallback (Vue Router history mode)
+app.use(
+  express.static(distPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('.css')) {
+        res.setHeader('Content-Type', 'text/css')
+      } else if (filePath.endsWith('.js')) {
+        res.setHeader('Content-Type', 'application/javascript')
+      } else if (filePath.match(/\.(map)$/)) {
+        res.setHeader('Content-Type', 'application/json')
+      } else if (filePath.match(/\.(woff2?|ttf|eot|svg)$/)) {
+        res.setHeader('Content-Type', 'font/woff2')
+      }
+      console.log('Serving static file:', filePath)
+    },
+    fallthrough: true,
+  })
+)
+
 app.get('*', (req, res) => {
-  res.sendFile(path.join(distPath, 'index.html'))
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({ error: 'API route not found' })
+  }
+  if (path.extname(req.path)) {
+    return res.status(404).end()
+  }
+  if (!req.accepts || !req.accepts('html')) {
+    return res.status(404).end()
+  }
+  res.setHeader('Content-Type', 'text/html')
+  res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    if (err) {
+      console.error('Error sending index.html:', err)
+      res.status(err.status || 500).end()
+    }
+  })
 })
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+export const api = app
+
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+}
