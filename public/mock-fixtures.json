@@ -1,0 +1,49 @@
+{
+  "data": [
+    {
+      "id": "mock-1",
+      "localteam_id": 1,
+      "visitorteam_id": 11,
+      "localteam": { "name": "Mockupkamp 1A" },
+      "visitorteam": { "name": "Mockupkamp 1B" },
+      "league_id": 271,
+      "time": { "starting_at": "2025-10-24T15:00:00Z" }
+    },
+    {
+      "id": "mock-2",
+      "localteam_id": 2,
+      "visitorteam_id": 12,
+      "localteam": { "name": "Mockupkamp 2A" },
+      "visitorteam": { "name": "Mockupkamp 2B" },
+      "league_id": 271,
+      "time": { "starting_at": "2025-10-24T15:00:00Z" }
+    },
+    {
+      "id": "mock-3",
+      "localteam_id": 3,
+      "visitorteam_id": 13,
+      "localteam": { "name": "Mockupkamp 3A" },
+      "visitorteam": { "name": "Mockupkamp 3B" },
+      "league_id": 271,
+      "time": { "starting_at": "2025-10-24T15:00:00Z" }
+    },
+    {
+      "id": "mock-4",
+      "localteam_id": 4,
+      "visitorteam_id": 14,
+      "localteam": { "name": "Mockupkamp 4A" },
+      "visitorteam": { "name": "Mockupkamp 4B" },
+      "league_id": 271,
+      "time": { "starting_at": "2025-10-24T15:00:00Z" }
+    },
+    {
+      "id": "mock-5",
+      "localteam_id": 5,
+      "visitorteam_id": 15,
+      "localteam": { "name": "Mockupkamp 5A" },
+      "visitorteam": { "name": "Mockupkamp 5B" },
+      "league_id": 271,
+      "time": { "starting_at": "2025-10-24T15:00:00Z" }
+    }
+  ]
+}

@@ -25,11 +25,11 @@
   "devDependencies": {
     "vite": "^5.4.21",
     "@vitejs/plugin-vue": "^4.2.3",
-    "@tailwindcss/vite": "^4.1.13",
     "eslint": "^9.31.0",
     "@eslint/js": "^9.31.0",
     "globals": "^16.3.0",
-    "tailwindcss": "^3.5.0",
+    "@tailwindcss/forms": "^0.5.7",
+    "tailwindcss": "^3.3.3",
     "postcss": "^8.4.24",
     "autoprefixer": "^10.4.14"
   }

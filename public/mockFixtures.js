@@ -1,8 +1,3 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import './style.css'
-
 const todayStr = new Date().toISOString().slice(0, 10)
 export const mockFixtures = Array.from({ length: 5 }).map((_, i) => ({
   id: `mock-${i + 1}`,
@@ -17,7 +12,3 @@ export const mockFixtures = Array.from({ length: 5 }).map((_, i) => ({
 export function getFixtures() {
   return { data: mockFixtures }
 }
-
-const app = createApp(App)
-app.use(router)
-app.mount('#app')
