@@ -50,14 +50,12 @@ onMounted(() => {
 })
 
 const oddsFor = (choice) => (choice === 'draw' ? 5.0 : 2.0)
-
 const simulateResult = () => {
   const rand = Math.random()
   if (rand < 0.45) return 'home'
   if (rand < 0.9) return 'away'
   return 'draw'
 }
-
 const resultText = (r, teamA, teamB) => {
   if (r === 'home') return `${teamA} won`
   if (r === 'away') return `${teamB} won`
@@ -117,8 +115,8 @@ const placeBet = async (match) => {
 
 onMounted(() => {
   apiMatches.value = mockFixtures.map(f => ({
-    teamA: f.localteam?.name || f.localteam_id,
-    teamB: f.visitorteam?.name || f.visitorteam_id,
+    teamA: f.localteam.name,
+    teamB: f.visitorteam.name,
     selected: 'home',
     betAmount: 50,
     message: ''
@@ -127,6 +125,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <h1 class="text-2xl font-bold mb-4 text-center">Bet Your Money</h1>
   <div class="relative min-h-screen">
     <div class="fixed left-4 top-1/4 w-48 p-4 bg-gray-300 rounded-lg z-50">
       <h2 class="text-lg font-bold mb-2">Balance</h2>
@@ -138,7 +137,9 @@ onMounted(() => {
 
     <div class="flex justify-center p-6">
       <div class="w-full max-w-xl">
-        <div v-if="!apiMatches.length" class="text-center text-gray-500 py-10">Loading matches...</div>
+        <div v-if="apiMatches.length === 0" class="text-center text-gray-500 py-10">
+          Loading matches...
+        </div>
         <div v-else>
           <div v-for="match in apiMatches" :key="match.teamA + match.teamB" class="bg-white p-4 rounded-lg shadow mb-4">
             <h3 class="text-lg font-semibold mb-2">{{ match.teamA }} vs {{ match.teamB }}</h3>

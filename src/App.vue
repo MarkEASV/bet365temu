@@ -1,19 +1,17 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { auth } from './firebase.js'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import router from './router'
 
-const email = ref('')
-const password = ref('')
 const isLoggedIn = ref(false)
-const auth = getAuth() 
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       isLoggedIn.value = true
-      console.log('User is logged in:', user.email)
+      console.log('User is logged in:', user.email || user.uid)
     } else {
       isLoggedIn.value = false
       console.log('No user is logged in')
@@ -52,8 +50,6 @@ const handlesignout = () => {
         API testing
       </RouterLink>
     </div>
-    
-  
 
     <div class="flex gap-4 font-bold text-lg">
       <RouterLink
@@ -71,23 +67,24 @@ const handlesignout = () => {
       >
         signup
       </RouterLink>
-      
-      <button @click="handlesignout" v-if="isLoggedIn" class="px-6 py-2 rounded-full border border-red-400 text-red-400 hover:bg-red-400 hover:text-white transition">
+
+      <button
+        v-if="isLoggedIn"
+        @click="handlesignout"
+        class="px-6 py-2 rounded-full border border-red-400 text-red-400 hover:bg-red-400 hover:text-white transition"
+      >
         Logout
       </button>
     </div>
   </nav>
 
-  <main class="bg-gray-100 min-h-screen flex flex-col items-center justify-center">
-  <RouterView />
-
-  <h1 v-if="!isLoggedIn && $route.path === '/'">
-    Log ind eller opret en profil for at oddse
-  </h1>
-</main>
-
+  <main class="bg-gray-100 min-h-screen flex flex-col items-center justify-center w-full">
+    <RouterView />
+    <h1 v-if="!isLoggedIn && $route.path === '/'">
+      Log ind eller opret en profil for at oddse
+    </h1>
+  </main>
 </template>
 
 <style scoped>
-
 </style>
