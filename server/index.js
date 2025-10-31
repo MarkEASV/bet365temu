@@ -1,5 +1,4 @@
 import express from 'express'
-import fetch from 'node-fetch'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import path from 'path'
@@ -13,9 +12,25 @@ const PORT = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
 
-console.log('Backend running – free-plan safe fixtures ready')
+console.log('Backend starting — fixtures service')
 
-// MOCKUP kampe
+let fetchFn = null
+if (typeof fetch === 'function') {
+  fetchFn = fetch
+} else {
+  try {
+    const nodeFetch = await import('node-fetch')
+    fetchFn = nodeFetch.default || nodeFetch
+  } catch (err) {
+    console.error(
+      'No fetch available. Install node-fetch or run Node 18+.\nError:',
+      err.message
+    )
+    process.exit(1)
+  }
+}
+
+// MOCKUP fixtures
 const generateMockFixtures = () => {
   const todayStr = new Date().toISOString().slice(0, 10)
   const fixtures = []
@@ -27,7 +42,7 @@ const generateMockFixtures = () => {
       localteam: { name: `Mockupkamp ${i}A` },
       visitorteam: { name: `Mockupkamp ${i}B` },
       league_id: 271,
-      time: { starting_at: `${todayStr}T15:00:00Z` }
+      time: { starting_at: `${todayStr}T15:00:00Z` },
     })
   }
   return fixtures
@@ -38,22 +53,22 @@ app.get('/api/fixtures', async (req, res) => {
   let fixtures = []
 
   try {
-    const response = await fetch(
+    const response = await fetchFn(
       `https://soccer.sportmonks.com/api/v3/football/fixtures?leagues=271&date=${todayStr}&api_token=${process.env.SPORTSMONKS_TOKEN}`
     )
     const json = await response.json()
 
     if (json.data && json.data.length > 0) {
       fixtures = json.data
-      console.log('Fundet kampe fra Superliga!')
+      console.log('Found fixtures from Superliga')
     } else {
       fixtures = generateMockFixtures()
-      console.log('Ingen kampe fundet, bruger mockup fixtures')
+      console.log('No fixtures found — using mock fixtures')
     }
   } catch (err) {
-    console.log('Fejl ved hentning af Superliga:', err.message)
+    console.log('Error fetching Superliga:', err.message)
     fixtures = generateMockFixtures()
-    console.log('Bruger mockup fixtures pga. fejl')
+    console.log('Using mock fixtures due to error')
   }
 
   res.json({ data: fixtures })
@@ -62,7 +77,7 @@ app.get('/api/fixtures', async (req, res) => {
 app.get('/api/rounds/:roundId', async (req, res) => {
   const { roundId } = req.params
   try {
-    const response = await fetch(
+    const response = await fetchFn(
       `https://api.sportmonks.com/v3/football/rounds/${roundId}?include=fixtures.odds.market;fixtures.odds.bookmaker;fixtures.participants;league.country&filters=markets:1;bookmakers:2&api_token=${process.env.SPORTSMONKS_TOKEN}`
     )
     const json = await response.json()
@@ -73,7 +88,7 @@ app.get('/api/rounds/:roundId', async (req, res) => {
   }
 })
 
-// SERVE FRONTEND (for Render)
+// SERVE FRONTEND (for deployments)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const distPath = path.join(__dirname, '../dist')
 app.use(express.static(distPath))
@@ -82,6 +97,5 @@ app.use(express.static(distPath))
 app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'))
 })
-
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))

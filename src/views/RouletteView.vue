@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { db, auth } from '@/firebase.js'
+import { db, auth } from '../firebase.js'
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth'
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 
